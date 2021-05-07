@@ -1,5 +1,9 @@
 #   Scramjets
 
+- Describe the qualitative behavior of a scramjet and distinguish it from other jet engines.
+- Identify quantities in governing equations and list consequences of MIRGE-Com's assumptions.
+- Distinguish experimental data collection from computer-based simulation data collection.
+
 Much of aeronautical engineering is concerned with moving relatively heavy objects _quickly_ in atmosphere.  To this end, a number of propulsion devices have been developed or proposed over the past century, including the _jet engine_ family, in which the vehicle is propelled by reaction against thrust:
 
 1. Chemical rocket
@@ -162,15 +166,15 @@ Practical challenges include:
 - developing heat-dissipative refractory materials
 
 
-##  MirgeCom
+##  MIRGE-Com
 
-You should download and install MirgeCom and Emirge (the operating environment for MirgeCom).
+You should download and install MIRGE-Com and Emirge (the operating environment for MIRGE-Com).
 
 - [[Emirge](https://github.com/illinois-ceesd/emirge)]
 
 You will need access to a Unix-compatible operating system:  Linux, macOS, and Windows Subsystem for Linux are all reasonable choices.
 
-TODO We will also arrange cluster access for you to use in working on MirgeCom.
+TODO We will also arrange cluster access for you to use in working on MIRGE-Com.
 
 
 ##  Exercises
