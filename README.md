@@ -2,26 +2,27 @@
 
 These tutorials were prepared by N E Davis for the [Center for Exascale-Enabled Scramjet Design](https://ceesd.illinois.edu/).
 
-- The Physics of Scramjets
+0. [The Physics of Scramjets](./0-physics.md)
   - Qualitative Behavior
   - Governing Equations
   - Physical Models
   - Assumptions & Simplifications
-- Discretization & Mapping
+1. [Discretization & Mapping](./1-discrete.md)
   - Geometry
   - Structure
   - Special Requirements (Wall functions, etc.)
-- Transport on Grids
+2. Transport on Grids
   - Challenges
   - Strategies
-- Grid Data Structures
+3. Grid Data Structures
   - Representations
   - Distributed Computing
-- Matrix Solvers & Conditioning
-- Shock Modeling
-- Software Quality/V&V
-- Chemistry Modeling in Flows
+4. Matrix Solvers & Conditioning
+5. Shock Modeling
+6. [Software Quality/V&V](./6-verval.md)
+7. Chemistry Modeling in Flows
   - Combustion Chemistry
   - Reaction Coordinate Method
 
 Some material draws from my 2016 course ME 498CF “Computational Fluid Dynamics with Fluent”.
+
