@@ -1,4 +1,32 @@
-#   Transport on Grids
+#   Transport and Flux on a Grid
+
+- Write inter-element flux equations.
+- Enumerate reasons for drift in conserved state variables.
+- Diagnose transport issues for a particular mesh–element scheme.
+
+##  
+
+To monitor this situation, we frequently employ global balance equations, which watch for drift in the sum of state variables.
+
+
+Euler's equations of gas dynamics:
+
+.. math::
+
+    \partial_t \mathbf{Q} = -\nabla\cdot{\mathbf{F}} +
+    (\mathbf{F}\cdot\hat{n})_{\partial\Omega} + \mathbf{S}
+
+where:
+
+-   state $\mathbf{Q} = [\rho, \rho{E}, \rho\vec{V} ]$
+-   flux $\mathbf{F} = [\rho\vec{V},(\rho{E} + p)\vec{V},
+    (\rho(\vec{V}\otimes\vec{V}) + p*\mathbf{I})]$,
+-   domain boundary $\partial\Omega$,
+-   sources $\mathbf{S} = [{(\partial_t{\rho})}_s,
+    {(\partial_t{\rho{E}})}_s, {(\partial_t{\rho\vec{V}})}_s]$
+
+
+TODO mirgecom/euler.py:_facial_flux
 
 ##  Surface Flux
 
@@ -136,44 +164,6 @@ Physical diffusion
 
 
 The most common way to think about truncation error is that we are inexactly solving an exact expression.  It's also possible to flip the statement:  we are exactly solving an inexact expression.  Sometimes this latter approach is fruitful in reasoning about how and whether to worry about numerical error sources in a calculation.
-
-
-##  Distributed Computing
-
-When resolving a large, long-time-spanning, or detailed model, it is necessary to bring more computing power to bear than a single workstation can provide.  Various forms of distributed or parallel computing, including the use of graphics processing units (GPUs) and computing clusters, are frequently employed in scientific modeling to allow up to tens of thousands of CPUs to focus on solving a particularly thorny problem in a single battery.  Distributed computing reequires the developer to adopt a scheme of carving up a problem into parts; one of the most common methods, and the one that MIRGE-Com uses, is to divide the physical domain being simulated into different chunks, each one evaluated in parallel on a different processor.
-
-Some terminology is in order:  we call a single CPU a _processor_ and refer to it by its _rank_, a unique cardinal number.  (Typically all activity is coordinated by the rank-zero processor, the _manager rank_.)  A collection of processors on a single board is a _node_; nodes can have from one to 32 processors on them, depending on the system architecture.  Sometimes nodes also have a number of _GPUs_ available, as on Lassen or Campus Cluster.  GPUs are used for specialized calculations since they have strict categories of efficiency and memory operations to and from them are relatively expensive.
-
-You don't get anything for free in parallel computing:  although some problems can be readily computed without reference to other points, as soon as dependencies along the grid are required it becomes critical to coordinate activity and information.  If you are interested in learning more about the fundamental benefits and limits of parallel computing, check out CS 240 Parallel Programming or TODO.
-
-Given a discretized domain chopped up across many processors, each processor must, at each time step, marshall all values needed for calculations on other processors and share them while listening for the data it needs.  Such grid elements as are necessary to communicate are commonly called _boundary elements_ TODO.  When gathering information in order to later send it, it is common to refer to the conceptually adjacent processors as _ghost ranks_.
-
-One way of producing a mesh is illustrated in this simplified 2D example from `wave-eager-mpi.py`, which produces a unit square mesh centered at the origin:
-
-```py
-if mesh_dist.is_manager_rank():
-    from meshmode.mesh.generation import generate_regular_rect_mesh
-    mesh = generate_regular_rect_mesh(a=(-0.5,-0.5),
-                                      b=(+0.5,+0.5),
-                                      n=(16,16))
-
-    print(f"{mesh.nelements} elements")
-    part_per_element = get_partition_by_pymetis(mesh, num_parts)
-    local_mesh = mesh_dist.send_mesh_parts(mesh, part_per_element, num_parts)
-    del mesh
-
-else:
-    local_mesh = mesh_dist.receive_mesh_part()
-```
-
-At the beginning, the mesh only consists of a collection of spatial points, which do not yet carry any state information.  These mesh points are assigned to distributed ranks by PyMetis.  To be clear, _only_ the first rank (`0`) generates the mesh; the other ranks merely listen for their local assignments.
-
-After that has taken place, the mesh discretization along these points takes place by actually constructing the discrete elements:
-
-```py
-discr = EagerDGDiscretization(actx, local_mesh, order=3, mpi_communicator=comm)
-```
-
 
 ---
 From the numerical point of view, numerical diffusion and dispersion reflect on the properties of the spatial discretisation employed:

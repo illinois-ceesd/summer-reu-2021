@@ -136,11 +136,19 @@ We make the following assumptions about the flow:
 
 - supersonic (i.e. no significant transonic or subsonic pockets)
 - compressible
-- inviscid
+- inviscid (frictionless, zero-viscosity)
 
+TODO
 https://slideplayer.com/slide/14223195/ slide #3
 
 http://aerospace.utoronto.ca/pdf_files/supersonic.pdf p. 10
+
+How good are the physical assumptions?  They're a pretty good set for scramjet engines:
+
+- Supersonic flow requires that the external speed is quite high, probably above Mach 2.  This is a baseline assumption of operation for the scramjet so it's a valid assumption.
+- Compressibility is a good assumption for flows above Mach 0.3 and shock waves can form for local velocities greater than Mach 1.  [[MAE 5420 Notes](http://mae-nas.eng.usu.edu/MAE_5420_Web/section5/section.5.5.pdf)]
+- Inviscid flow is a reasonable assumption for the parabolized Navier-Stokes equations:  “the viscous terms in the marching direction (which we loosely refer to as streamwise) are negligible.”  [[Schiff & Steger, “Numerical Simulation of Steady Supersonic Viscous Flow”, NASA Technical Paper 1749](https://ntrs.nasa.gov/api/citations/19810013488/downloads/19810013488.pdf)]
+
 
 ##  Experimental Data
 
@@ -153,38 +161,48 @@ Experimental observational data differ substantially from computer modeling beca
 types of experimental data
 
 HIFiRE-3
+TODO
+
+We will discuss experimental data in more detail in “Verification & Validation and Software Quality”.
 
 
 ##  Challenges
 
-Practical challenges include:
+> While scramjets are conceptually simple, actual implementation is limited by extreme technical challenges. Hypersonic flight within the atmosphere generates immense drag, and temperatures found on the aircraft and within the engine can be much greater than that of the surrounding air. Maintaining combustion in the supersonic flow presents additional challenges, as the fuel must be injected, mixed, ignited, and burned within milliseconds. Fuel mixing, along with the configuration and positioning of the injectors and the boundary conditions, play a key role in combustion efficiency. [[Gerdroodbary, _Scramjets: Fuel Mixing and Injection Systems_](https://www.sciencedirect.com/book/9780128211380/scramjets)]
 
-- autoignition ("like lighting a match in a hurricane")
-- experimental data
-  - visualizing phenomena such as shock waves
-  -
+Practical challenges to producing and operating scramjets include:
+
+- autoignition of the internal flow ("like lighting a match in a hurricane")
+- fuel–oxidizer mixing
 - developing heat-dissipative refractory materials
+- obtaining experimental data
+  - acquiring high-grade internal flow state
+  - visualizing phenomena such as shock waves
 
 
 ##  MIRGE-Com
 
-You should download and install MIRGE-Com and Emirge (the operating environment for MIRGE-Com).
+You should download and install MIRGE-Com and Emirge (the operating environment for MIRGE-Com) on a system you will have regular access to.  Consult with your mentor as need be.  You will need access to a Unix-compatible operating system:  Linux, macOS, and Windows Subsystem for Linux are all reasonable choices.  We will also arrange cluster access for you to use in working on MIRGE-Com.
 
 - [[Emirge](https://github.com/illinois-ceesd/emirge)]
 
-You will need access to a Unix-compatible operating system:  Linux, macOS, and Windows Subsystem for Linux are all reasonable choices.
+MIRGE-Com is in active development.  Expect to pull the base branch you are working on frequently in order to stay up-to-date as new features come online.
 
-TODO We will also arrange cluster access for you to use in working on MIRGE-Com.
+If you are unfamiliar with Git and GitHub, please consult this lesson to obtain a working idea of their operation:
+
+- [[Software Carpentry, “Version Control with Git”](https://swcarpentry.github.io/git-novice/)]
 
 
 ##  Exercises
 
 _Our “homework” exercises won't be for credit; we aim for them to be sufficiently enlightening as to be worth your time in completing them._
 
-2.  Plot $\frac{T}{\dot{m_a}}$ and $\frac{T}{\dot{m_a}a_0}$ v. Mach number $M$ from 1 to 5.
-3.  Plot TSFC v. Mach number $M$ from 1 to 5.
-4.  Plot Isp v. Mach number $M from 1 to 5.
-5.  Plot thermal, propulsive, and overall efficiency v. Mach number $M$ from 1 to 5.
+TODO
+
+1.  Plot $\frac{T}{\dot{m_a}}$ and $\frac{T}{\dot{m_a}a_0}$ v. Mach number $M$ from 1 to 5.
+2.  Plot TSFC v. Mach number $M$ from 1 to 5.
+3.  Plot Isp v. Mach number $M from 1 to 5.
+4.  Plot thermal, propulsive, and overall efficiency v. Mach number $M$ from 1 to 5.
 
 - $Q_R = 48,000 \,\text{kJ}/\text{kg}$ for _n_-decane
 - 55,500 methane

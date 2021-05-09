@@ -1,46 +1,115 @@
 #   Discretization
 
+- Compare and critique meshing and discretization schemes.
+- Identify common modes of numerical error.
+- Produce a mesh suitable for use in MIRGE-Com simulations.
+
 Most numerical simulations require the modeled system to be broken into discrete components along a grid so that individual points and fields can be calculated and interpolated to produce an overall system state.  Let's look at how MIRGE-Com handles the problem discretization and represents the grid.
 
+The basic algorithm for a numerical solution is as follows:
 
-##  Nodal Galerkin Methods
+1. Accept a mesh (generated from a geometry) and populate it into elements with specified connectivity.
+2. Decompose the elements into structures and write a governing equation relationship (such as heat transfer, mass transfer, momentum transfer, force-displacement) for each element.
+3. Assemble all of the elements to get the governing equation statement for the entire problem, if explicily formulatedt; set up an iterative loop, if implicitly formulated.
+4. Apply boundary conditions.
+5. Solve the resulting linear system to get the solution.
+6. Post-process this result to extract temperature, heat flux, velocity, and other variables of interest.
 
-MIRGE-Com implements a nodal discrete Galerkin finite element method.  This blends aspects of nodal methods (using Lagrange polynomials on each element), finite element methods (TODO), and finite volume methods (weak forms of the conservative form of the governing equations).  Since you probably haven't done much numerical work yet, let's break down what these things mean.
 
-**Nodal Methods**.
-**Finite Element Methods**.
-**Finite Volume Methods**.
-**Putting It All Together**.
-
-"nodal FEM means you’re using a nodal basis (like lagrange polynomials on each element versus Legendre which would be hierarchical and don’t need nodes).  The DG part is basically finite volume but in “weak form” (wrapping integrals around the conservation law)."
-
-- [Hesthaven & Warburton, _Nodal Discontinuous Galerkin Methods:  Algorithms, Analysis, and Applications_](https://link.springer.com/book/10.1007%2F978-0-387-72067-8)
-
-##  Geometry
-
-(lots of good stuff from ME498CF1)
+##  Geometry & Mesh
 
 MIRGE-Com specifies problem geometry using the `meshmode.mesh.generation` module.  There are a number of 2D and 3D volumetric primitives such as `generate_regular_rect_mesh` and `make_curve_mesh` which can be used to compose a mesh.
 
-For instance, a basic isolator shape can be implemented using this setup:
-
 ```py
-
+from meshmode.mesh.generation import generate_regular_rect_mesh
+mesh = generate_regular_rect_mesh(
+    a=(-0.5,)*dim,
+    b=(0.5,)*dim,
+    n=(nel_1d,)*dim)
 ```
 
-##  Structure
+MIRGE-Com can also import an existing mesh file:
+
+```py
+from meshmode.mesh.io import read_gmsh
+meshfile = "./isolator.msh"
+mesh = read_gmsh(meshfile, force_ambient_dim=2)
+```
+
+In a typical model, the geometry is used to produce a mesh, which is then filled with appropriate cells per the mathematical being used.
+
+**Geometry**.  Geometry files `.geo` define the boundary points in 2D or 3D.  The geometry typically specifies boundaries (and perhaps voids), sometimes materials.
+
+- [`isolator.geo`](https://raw.githubusercontent.com/w-hagen/isolator/master/isolator.geo)
+
+**Mesh**.  Mesh files `.msh` can be produced using CAD programs, [Gmsh](https://gmsh.info/doc/texinfo/gmsh.html), and other programs.  The mesh specify edge points for elements to span between, but does not specify the nature of those elements.
+
+
+https://github.com/w-hagen/isolator/blob/master/isolator.py
+https://github.com/illinois-ceesd/mirgecom/pull/213
+TODO
+
+Two-dimensional elements are typically triangular or quadrilateral.  Triangles are good for complex geometries, but there are mixed opinions on whether quadrilaterals are all-round superior.
+
+> Quadrilateral plane stress finite elements ... possess more nodes and dof than comparable triangular elements and therefore require shape functions of higher polynomial degree.  This allows more variation of strain and stress within the element with the consequent opportunities for better accuracy.  (Carroll)
+
+Three-dimensional elements are tetrahedra or “hexahedra” (a funny way of saying blocks).
+
+- Use Gmsh to produce a 2D mesh for `isolator.msh`.
+
+In many cases, our domain is separated across an array of processors.  Such distributed computing introduces new considerations in mesh layout and partition; we will cover this in more detail in “Grid Data Structures.”
+
+- [Carroll, *A Primer for Finite Elements in Elastic Structures*](https://books.google.com/books?id=6J7ec7ILGYQC&pg=PA225&lpg=PA225#v=onepage&q&f=false).
+- [FEM for Two-Dimensional Solids (Finite Element Method) Part 1](http://what-when-how.com/the-finite-element-method/fem-for-two-dimensional-solids-finite-element-method-part-1/)
+
+
+##  Elements
+
+Given a mesh of elements, we must select a numerical method which converges on an approximately correct solution.  Depending on the simulation, we can choose finite difference methods, finite element methods, and finite volume methods, among others.
+
+MIRGE-Com implements a nodal discrete Galerkin finite element method.  This blends aspects of nodal methods, finite element methods, and finite volume methods.  Since you probably haven't done much numerical work yet, let's break down what these things mean.
+
+**Nodal Methods**.  Nodal (or _spectral_) methods utilize Lagrange polynomials to
+
+- [[Wolfram Language Documentation, “`FiniteElementMethod`,” section “Two-Dimensional Shape Functions”](https://reference.wolfram.com/applications/structural/FiniteElementMethod.html)]
+
+**Finite Element Methods**.  FEM describes a collection of methods which write a descriptive approximation of a differential equation over a particular subregion of a problem.  FEM is well-suited to structural mechanics problems and coupled systems of differential equations.
+
+**Finite Volume Methods**.  FVM differs from FEM in that FVM writes a volume integral over the element instead of a spanning basis description.  FVM is commonly used in fluid flow simulations.
+(weak forms of the conservative form of the governing equations)
+
+
+**Putting It All Together**.  We said MIRGE-Com used a _nodal discrete Galerkin finite element method_:
+
+- **Nodal**.  We use a nodal basis, such as Lagrange polynomials, on each element.
+
+    If we load a solved example problem, we can see the nodal elements:
+
+    ![](TODO)
+
+- **Discrete Galerkin**.  We use weak-form finite volume methods (thus integrals wrapped around conservation laws).
+- **Finite element**.  We implement all of this on single elements which are converged to a consistent mathematical solution of the entire region which satisfies the governing equations including boundary conditions.
+
+
+- [Fischer, “Introduction to Galerkin Methods” (TAM 470)](http://fischerp.cs.illinois.edu/tam470/refs/galerkin2.pdf)
+- [Hesthaven & Warburton, _Nodal Discontinuous Galerkin Methods:  Algorithms, Analysis, and Applications_](https://link.springer.com/book/10.1007%2F978-0-387-72067-8)
+
 
 ##  Special Requirements
 
-border discontinuities
-shock waves
+MIRGE-Com must take into account several situations which require particular care to get right:
 
-<blockquote>
-The strategies used to solve coupled sets of physics equations can be generally categorized as loose coupling and tight coupling. In loose coupling, the individual physics in a coupled problem are solved individually, keeping the solutions for the other physics fixed. After a solution is obtained for an individual physics, it is transferred to other physics that depend on it, and solutions are obtained for those physics.
+TODO
+1. Border-element discontinuities
+2. Shock wave discontinuities
+3. Coupled differential equations
 
-These fixed-point iterations are repeated until convergence is obtained. If there is not a strong two-way feedback between the physics involved, convergence can be obtained quickly with a minimal number of loose-coupling iterations. An advantage of this approach is that it allows for independent codes to be coupled with relatively minor modifications to those codes, and they can each use their own solution strategies that are tailored for their solution domain. The disadvantage of loose coupling is that if  there is strong two-way feedback between the physics, that approach can have an unacceptably slow convergence rate and is more likely to encounter convergence difficulty.
+    Given a set of differential equations which rely on each other's state values for solution behavior, find a computational method which allows you to stably converge on valid solutions.  For instance, if flow, heat flux, and temperature all interdepend, how should you build a solver?
 
-In tight coupling solution methods, a single system of equations is assembled and solved for the full set of coupled physics. The nonlinear iterations operate on the full system of equations simultaneously, taking into account the interactions between the equations for the coupled physics in each iteration. In cases where there is strong coupling between the physics, this approach can have faster convergence rates than loose coupling. The primary disadvantage of this approach is that it necessitates tighter coordination between the codes to solve the individual physics.
-
-https://inldigitallibrary.inl.gov/sti/5842302.pdf
-</blockquote>
+    > The strategies used to solve coupled sets of physics equations can be generally categorized as loose coupling and tight coupling. In loose coupling, the individual physics in a coupled problem are solved individually, keeping the solutions for the other physics fixed. After a solution is obtained for an individual physics, it is transferred to other physics that depend on it, and solutions are obtained for those physics.
+    >
+    > These fixed-point iterations are repeated until convergence is obtained. If there is not a strong two-way feedback between the physics involved, convergence can be obtained quickly with a minimal number of loose-coupling iterations. An advantage of this approach is that it allows for independent codes to be coupled with relatively minor modifications to those codes, and they can each use their own solution strategies that are tailored for their solution domain. The disadvantage of loose coupling is that if  there is strong two-way feedback between the physics, that approach can have an unacceptably slow convergence rate and is more likely to encounter convergence difficulty.
+    >
+    > In tight coupling solution methods, a single system of equations is assembled and solved for the full set of coupled physics. The nonlinear iterations operate on the full system of equations simultaneously, taking into account the interactions between the equations for the coupled physics in each iteration. In cases where there is strong coupling between the physics, this approach can have faster convergence rates than loose coupling. The primary disadvantage of this approach is that it necessitates tighter coordination between the codes to solve the individual physics.
+    >
+    > [[Novascone et al., “A Comparison of Thermomechanics Coupling Strategies in Fuel Pin and Pressure Vessel Simulations” INL/CON-12-27510](https://inldigitallibrary.inl.gov/sites/sti/sti/5842302.pdf)] [[archive](https://1library.net/document/qodk670z-comparison-thermomechanics-coupling-strategies-fuel-pressure-vessel-simulations.html)]
