@@ -135,7 +135,7 @@ In software, requirements are used to validate software.  Requirements are spoke
     | Testing that an object model completely enumerates possible cases | __________ |
     | Fuzzing a system to determine behavior | __________ |
 
-The following two exercises are from a CFD class I ran a few years ago.  They don't directly work in MIRGE-Com, but use them as inspiration for thinking about how to carry out V&V in MIRGE-Com.
+The following two exercises are from a CFD class I ran a few years ago, ME 498CF.  They don't directly work in MIRGE-Com, but use them as inspiration for thinking about how to carry out V&V in MIRGE-Com.
 
 2. The order of grid (spatial) convergence involves the behavior of the discretization error term ε with regards to the grid spacing $\Delta x$,
 
@@ -156,16 +156,17 @@ The following two exercises are from a CFD class I ran a few years ago.  They do
     $$
 
     We simply need to obtain the solutions $f_i$ in order to calculate $p$.  (Note that we can distinguish a local from a global order of accuracy by our choice of $f_i$—in general the global order of accuracy is one degree less than the local.)
-        - We’ll use a driven cavity flow for a square cavity of 1 m × 1 m square.  The flow is laminar and the moving wall moves at the rate 0.0001 m/s for Re = 1000.  (Set these conditions; use air.)
 
-        1. Solve the problem to convergence with mesh size 0.01 m, then refine the mesh to 2× resolution and solve the problem again.  Now to 4× (original) resolution.  Obtain the values fi by querying the pressure at a selected point (which should be available as a cell vertex on all three grids, such as (0.25, 0.25)).  Plot these using Excel or another tool to obtain p.  Fill out the values below.
-            1. point at ________, ________, ________
-            2. $r$ = ________
-            3. $f_{1×}$ = ________
-            4. $f_{2×}$ = ________
-            5. $f_{4×}$ = ________
-            6. $p$ = ________
-        2. Does the problem converge at the same rate in other variables (such as velocity)?  Elaborate.
+    - We’ll use a driven cavity flow for a square cavity of 1 m × 1 m square.  The flow is laminar and the moving wall moves at the rate 0.0001 m/s for Re = 1000.  (Set these conditions; use air.)
+
+    1. Solve the problem to convergence with mesh size 0.01 m, then refine the mesh to 2× resolution and solve the problem again.  Now to 4× (original) resolution.  Obtain the values fi by querying the pressure at a selected point (which should be available as a cell vertex on all three grids, such as (0.25, 0.25)).  Plot these using Excel or another tool to obtain $p$.  Fill out the values below.
+        1. point at ________, ________, ________
+        2. $r$ = ________
+        3. $f_{1×}$ = ________
+        4. $f_{2×}$ = ________
+        5. $f_{4×}$ = ________
+        6. $p$ = ________
+    2. Does the problem converge at the same rate in other variables (such as velocity)?  Elaborate.
 
 3.  One chief challenge of validation of numerical experiments is the difference in reported quantities v. measurable quantities. Another challenge is that many CFD experiments are idealizations which cannot be physically reproduced. Sometimes this is sidestepped by validating with reference to a well-characterized benchmark problem, such as Rayleigh–Taylor mixing or 1D shock propagation.  We will examine step 5 of the validation assessment process referenced in the notes by comparing to experimental data on the driven square cavity problem.
 
