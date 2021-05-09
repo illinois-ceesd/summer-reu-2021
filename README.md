@@ -1,6 +1,6 @@
 # CEESD Summer REU Tutorials
 
-These tutorials were prepared by N E Davis for the [Center for Exascale-Enabled Scramjet Design](https://ceesd.illinois.edu/).  The program's design was inspired by the [Los Alamos National Laboratory Computational Physics Student Summer Workshop](https://www.lanl.gov/org/padwp/adx/computational-physics/summer-workshop/index.php).
+These tutorials are designed to acquaint computer science and engineering students with the physical and computational principles underlying [MIRGE-Com](https://github.com/illinois-ceesd/mirgecom), a software library developed by the [Center for Exascale-Enabled Scramjet Design](https://ceesd.illinois.edu/) for simulating scramjets on distributed systems.  MIRGE-Com is written in Python; although I make oblique reference to other languages like C, only familiarity with Python is expected to complete these lessons.
 
 0. [The Physics of Scramjets](./0-physics.md)
   - Qualitative Behavior
@@ -22,5 +22,4 @@ These tutorials were prepared by N E Davis for the [Center for Exascale-Enabled 
   - Combustion Chemistry
   - Reaction Coordinate Method
 
-Some material draws from my 2016 course ME 498CF “Computational Fluid Dynamics with Fluent”.
-
+These tutorials were prepared by N E Davis for the [Center for Exascale-Enabled Scramjet Design](https://ceesd.illinois.edu/) in 2021.  The program's design was inspired by the [Los Alamos National Laboratory Computational Physics Student Summer Workshop](https://www.lanl.gov/org/padwp/adx/computational-physics/summer-workshop/index.php).  Some material draws from my 2016 course ME 498CF “Computational Fluid Dynamics with Fluent”.
