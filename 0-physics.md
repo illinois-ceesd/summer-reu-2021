@@ -143,11 +143,11 @@ https://slideplayer.com/slide/14223195/ slide #3
 
 http://aerospace.utoronto.ca/pdf_files/supersonic.pdf p. 10
 
-How good are the physical assumptions?  They're a pretty good set for scramjet engines:
+How good are each of these physical assumptions?  They're a pretty good set for scramjet engines:
 
 - Supersonic flow requires that the external speed is quite high, probably above Mach 2.  This is a baseline assumption of operation for the scramjet so it's a valid assumption.
 - Compressibility is a good assumption for flows above Mach 0.3 and shock waves can form for local velocities greater than Mach 1.  [[MAE 5420 Notes](http://mae-nas.eng.usu.edu/MAE_5420_Web/section5/section.5.5.pdf)]
-- Inviscid flow is a reasonable assumption for the parabolized Navier-Stokes equations:  “the viscous terms in the marching direction (which we loosely refer to as streamwise) are negligible.”  [[Schiff & Steger, “Numerical Simulation of Steady Supersonic Viscous Flow”, NASA Technical Paper 1749](https://ntrs.nasa.gov/api/citations/19810013488/downloads/19810013488.pdf)]
+- Inviscid flow is a reasonable assumption for the parabolized Navier-Stokes equations:  “the viscous terms in the marching direction (which we loosely refer to as streamwise) are negligible.”  [[Schiff & Steger, “Numerical Simulation of Steady Supersonic Viscous Flow”, NASA Technical Paper 1749](https://ntrs.nasa.gov/api/citations/19810013488/downloads/19810013488.pdf)]  (Do not confuse this with _artificial viscosity_, used to stabilize shock waves in simulation and discussed in “Shock Waves.”)
 
 
 ##  Experimental Data

@@ -210,3 +210,8 @@ Based on h.Jasak (1999), high resolution NVD differencing scheme for arbitrarily
 2. If on the other hand, the leading truncation term include EVEN-ORDER spatial derivatives numerical dispersion occurs.
 
 ---
+
+##  Boundary Conditions
+
+`boundary.py`
+`diffusion.py`

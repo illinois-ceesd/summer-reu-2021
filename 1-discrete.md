@@ -23,9 +23,9 @@ MIRGE-Com specifies problem geometry using the `meshmode.mesh.generation` module
 ```py
 from meshmode.mesh.generation import generate_regular_rect_mesh
 mesh = generate_regular_rect_mesh(
-    a=(-0.5,)*dim,
-    b=(0.5,)*dim,
-    n=(nel_1d,)*dim)
+    a=(-0.5,-0.5),
+    b=( 0.5, 0.5),
+    n=(nel_1d, nel_1d))
 ```
 
 MIRGE-Com can also import an existing mesh file:
@@ -40,14 +40,9 @@ In a typical model, the geometry is used to produce a mesh, which is then filled
 
 **Geometry**.  Geometry files `.geo` define the boundary points in 2D or 3D.  The geometry typically specifies boundaries (and perhaps voids), sometimes materials.
 
-- [`isolator.geo`](https://raw.githubusercontent.com/w-hagen/isolator/master/isolator.geo)
+- Examine [`isolator.geo`](https://raw.githubusercontent.com/w-hagen/isolator/master/isolator.geo).
 
 **Mesh**.  Mesh files `.msh` can be produced using CAD programs, [Gmsh](https://gmsh.info/doc/texinfo/gmsh.html), and other programs.  The mesh specify edge points for elements to span between, but does not specify the nature of those elements.
-
-
-https://github.com/w-hagen/isolator/blob/master/isolator.py
-https://github.com/illinois-ceesd/mirgecom/pull/213
-TODO
 
 Two-dimensional elements are typically triangular or quadrilateral.  Triangles are good for complex geometries, but there are mixed opinions on whether quadrilaterals are all-round superior.
 
@@ -55,7 +50,7 @@ Two-dimensional elements are typically triangular or quadrilateral.  Triangles a
 
 Three-dimensional elements are tetrahedra or “hexahedra” (a funny way of saying blocks).
 
-- Use Gmsh to produce a 2D mesh for `isolator.msh`.
+- Use Gmsh to produce a 2D mesh for `isolator.msh` from `isolator.geo`.
 
 In many cases, our domain is separated across an array of processors.  Such distributed computing introduces new considerations in mesh layout and partition; we will cover this in more detail in “Grid Data Structures.”
 
@@ -90,8 +85,21 @@ MIRGE-Com implements a nodal discrete Galerkin finite element method.  This blen
 - **Discrete Galerkin**.  We use weak-form finite volume methods (thus integrals wrapped around conservation laws).
 - **Finite element**.  We implement all of this on single elements which are converged to a consistent mathematical solution of the entire region which satisfies the governing equations including boundary conditions.
 
+MIRGE-Com implements this in a developer-accessible manner using the `grudge` module:
+
+```py
+from grudge.eager import EagerDGDiscretization
+discr = EagerDGDiscretization(actx, mesh, order=3)
+```
+
+where `actx` is the PyOpenCL context for GPGPU computation.
+
+- Examine `wave-3d.py` and [`isolator.py`](https://github.com/w-hagen/isolator/blob/master/isolator.py) in full.
+
+Grudge is a library written to discretize discontinuous Galerkin operators, exactly the scenario that our supersonic scramjet simulation uses.
 
 - [Fischer, “Introduction to Galerkin Methods” (TAM 470)](http://fischerp.cs.illinois.edu/tam470/refs/galerkin2.pdf)
+- [Grudge Documentation](https://documen.tician.de/grudge)
 - [Hesthaven & Warburton, _Nodal Discontinuous Galerkin Methods:  Algorithms, Analysis, and Applications_](https://link.springer.com/book/10.1007%2F978-0-387-72067-8)
 
 
@@ -99,12 +107,11 @@ MIRGE-Com implements a nodal discrete Galerkin finite element method.  This blen
 
 MIRGE-Com must take into account several situations which require particular care to get right:
 
-TODO
-1. Border-element discontinuities
-2. Shock wave discontinuities
-3. Coupled differential equations
+1. Boundary conditions (`boundary.py`).  TODO
 
-    Given a set of differential equations which rely on each other's state values for solution behavior, find a computational method which allows you to stably converge on valid solutions.  For instance, if flow, heat flux, and temperature all interdepend, how should you build a solver?
+2. Shock wave discontinuities.  Discontinuities can cause trouble for many numerical methods, such as gradual diffusion rather than preservation of the physically-expected sharp boundary.  MIRGE-Com handles these using the Grudge discretizer, which is designed to handle [discontinuous Galerkin](https://en.wikipedia.org/wiki/Discontinuous_Galerkin_method) elements, which are piecewise continuous rather than continuous.
+
+3. Coupled differential equations (`eos.py`, _passim_).  Given a set of differential equations which rely on each other's state values for solution behavior, find a computational method which allows you to stably converge on valid solutions.  For instance, if flow, heat flux, and temperature all interdepend, how should you build a solver?
 
     > The strategies used to solve coupled sets of physics equations can be generally categorized as loose coupling and tight coupling. In loose coupling, the individual physics in a coupled problem are solved individually, keeping the solutions for the other physics fixed. After a solution is obtained for an individual physics, it is transferred to other physics that depend on it, and solutions are obtained for those physics.
     >
@@ -113,3 +120,5 @@ TODO
     > In tight coupling solution methods, a single system of equations is assembled and solved for the full set of coupled physics. The nonlinear iterations operate on the full system of equations simultaneously, taking into account the interactions between the equations for the coupled physics in each iteration. In cases where there is strong coupling between the physics, this approach can have faster convergence rates than loose coupling. The primary disadvantage of this approach is that it necessitates tighter coordination between the codes to solve the individual physics.
     >
     > [[Novascone et al., “A Comparison of Thermomechanics Coupling Strategies in Fuel Pin and Pressure Vessel Simulations” INL/CON-12-27510](https://inldigitallibrary.inl.gov/sites/sti/sti/5842302.pdf)] [[archive](https://1library.net/document/qodk670z-comparison-thermomechanics-coupling-strategies-fuel-pressure-vessel-simulations.html)]
+
+    MIRGE-Com TODO

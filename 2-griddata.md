@@ -86,19 +86,40 @@ class MeshPoint(object):
 
 The downside of this method is that data transfer and access tend to be relatively slow compared to bare arrays.
 
-MIRGE-Com opts for a hybrid version of these, using a single aggregate NumPy array of all array values which are integrated forward by the workhorse Runge-Kutta 4th-order method.  This assumes the `rhs` function deals with mesh connectivity, such as `wave_operator`.
+MIRGE-Com opts for a hybrid version of these, using a single aggregate NumPy array of all array values.  The MIRGE-Com mesh and elements are produced as discussed in “Discretization”:
 
 ```py
-def rk4_step(state, t, dt, rhs):
-    """Implement a generic RK4 time step state/rhs pair."""
-    k1 = rhs(t, state)
-    k2 = rhs(t+dt/2, state + dt/2*k1)
-    k3 = rhs(t+dt/2, state + dt/2*k2)
-    k4 = rhs(t+dt, state + dt*k3)
-    return state + dt/6*(k1 + 2*k2 + 2*k3 + k4)
+from meshmode.mesh.generation import generate_regular_rect_mesh
+mesh = generate_regular_rect_mesh(
+    a=(-0.5,-0.5),
+    b=( 0.5, 0.5),
+    n=(nel_1d, nel_1d))
+
+from grudge.eager import EagerDGDiscretization
+discr = EagerDGDiscretization(actx, mesh, order=order)
 ```
 
-`advance_state`
+These elements are integrated forward by a stepper function `advance_state`.  Typically, the workhorse Runge-Kutta 4th-order method `rk4_step` plays this role.  This assumes the `rhs` function deals with mesh connectivity, such as `wave_operator`.
+
+```py
+def my_rhs(t, state):
+    return euler_operator(discr,
+                          q=state,
+                          t=t,
+                          boundaries=boundaries,
+                          eos=eos)
+
+rhs = (current_step, current_t, current_state) = \
+            advance_state(rhs=my_rhs,
+                          timestepper=rk4_step,
+                          checkpoint=my_checkpoint,
+                          get_timestep=get_timestep,
+                          state=current_state,
+                          t=current_t,
+                          t_final=t_final)
+```
+
+- Examine and run `mirgecom/examples/sod-mpi.py`.
 
 
 ##  Distributed Computing
@@ -107,9 +128,9 @@ When resolving a large, long-time-spanning, or detailed model, it is necessary t
 
 Some terminology is in order:  we call a single CPU a _processor_ and refer to it by its _rank_, a unique cardinal number.  (Typically all activity is coordinated by the rank-zero processor, the _manager rank_.)  A collection of processors on a single board is a _node_; nodes can have from one to 32 processors on them, depending on the system architecture.  Sometimes nodes also have a number of _GPUs_ available, as on Lassen or Campus Cluster.  GPUs are used for specialized calculations since they have strict categories of efficiency and memory operations to and from them are relatively expensive.
 
-You don't get anything for free in parallel computing:  although some problems can be readily computed without reference to other points, as soon as dependencies along the grid are required it becomes critical to coordinate activity and information.  If you are interested in learning more about the fundamental benefits and limits of parallel computing, check out CS 240 Parallel Programming or TODO.
+You don't get anything for free in parallel computing:  although some problems can be readily computed without reference to other points, as soon as dependencies along the grid are required it becomes critical to coordinate activity and information.  If you are interested in learning more about the fundamental benefits and limits of parallel computing, check out CS 240 “Parallel Programming for Science and Engineering” or CS 484 “Parallel Programming”.
 
-Given a discretized domain chopped up across many processors, each processor must, at each time step, marshall all values needed for calculations on other processors and share them while listening for the data it needs.  Such grid elements as are necessary to communicate are commonly called _boundary elements_ TODO.  When gathering information in order to later send it, it is common to refer to the conceptually adjacent processors as _ghost ranks_.
+Given a discretized domain chopped up across many processors, each processor must, at each time step, marshall all values needed for calculations on other processors and share them while listening for the data it needs.  Such grid elements as are necessary to communicate are commonly called _boundary elements_.  When gathering information in order to later send it, it is common to refer to the conceptually adjacent processors as _ghost ranks_.
 
 One way of producing a mesh is illustrated in this simplified 2D example from `wave-eager-mpi.py`, which produces a unit square mesh centered at the origin:
 
@@ -136,3 +157,7 @@ After that has taken place, the mesh discretization along these points takes pla
 ```py
 discr = EagerDGDiscretization(actx, local_mesh, order=3, mpi_communicator=comm)
 ```
+
+Grudge seamlessly handles distributed-memory operations through the `_RankBoundaryCommunication` class in `grudge/eager.py`.  This uses non-blocking `Isend`/`Irecv` MPI operations in [MPI4Py](https://mpi4py.readthedocs.io/en/stable/).  Later `Wait` ensures completion before the results are returned and handled.
+
+- Examine the distributed-memory functionality block in `grudge/eager.py`.
