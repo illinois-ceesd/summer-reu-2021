@@ -1,5 +1,13 @@
 #  Verification & Validation and Software Quality
 
+* [Slides](./slides/6-verval.pdf)
+
+---
+
+- Identify verification procedures and situate them in the context of quality assurance.
+- Identify validation procedures and available means.
+- Distinguish model and software applications of V&V.
+
 Verification and validation procedures form an important step in obtaining and demonstrating confidence in your code products.  V&V can be carried out over the model and over the software.  We are concerned with both _model V&V_ and _software V&V_ in working on MIRGE-Com.
 
 **Model V&V**.  To keep things straight, think of a physical model used in engineering.  _Verification_ would mean making sure that the mathematical model is correctly implemented.  _Validation_ would mean making sure that the mathematical model actually describes reality.

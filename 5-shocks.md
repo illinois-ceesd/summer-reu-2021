@@ -1,5 +1,11 @@
 #   Shock Waves
 
+* [Slides](./slides/5-shocks.pdf)
+
+---
+
+- Describe schemes for ameliorating the difficulties of modeling shock waves.
+
 ##  
 
 angle of shocks
@@ -7,6 +13,7 @@ Mach number
 etc.
 
 1D Sod's (grep code)
+Burger's equation
 
 https://su2code.github.io/tutorials/Inviscid_Wedge/
 

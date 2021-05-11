@@ -1,5 +1,9 @@
 #   Scramjets
 
+* [Slides](./slides/0-physics.pdf)
+
+---
+
 - Describe the qualitative behavior of a scramjet and distinguish it from other jet engines.
 - Identify quantities in governing equations and list consequences of MIRGE-Com's assumptions.
 - Distinguish experimental data collection from computer-based simulation data collection.
@@ -61,7 +65,7 @@ Scramjets definitionally operate with supersonic velocities outside and inside o
 
 ![](./img/isolator.gif)
 
-**Steady-State Phase**.  Eventually the flow stabilizes into a series of standing waves.  In practice, the steady state has slight fluctuations (as any real system will), but settles into something like this snapshot:
+**Steady-State Phase**.  Eventually the flow stabilizes into a series of standing waves.  In practice, the steady state has slight fluctuations (as any real system will), but settles into something like this snapshot.  A well-designed inlet nozzle evens out many of the external flow inconsistencies.
 
 ![](./img/isolator-ss.png)
 
@@ -69,10 +73,12 @@ Notice the radiating static pressure waves.  These are shocks near the front, th
 
 Steady-state supersonic flows have the curious property that we can treat the $x$-dimension as analogous to a $t$ time coordinate:  that is, how far along the $x$-axis we are describes how "complete" our reacting system is.  In modeling chemical reactivity in the flow, we will take advantage of this as the so-called "reaction coordinate."
 
-[[Urzay, "Supersonic Combustion in Air-Breathing Propulsion Systems for Hypersonic Flight"](https://web.stanford.edu/~jurzay/annurev-fluid-122316-045217.pdf), p. 610]
+- [Urzay, "Supersonic Combustion in Air-Breathing Propulsion Systems for Hypersonic Flight"](https://web.stanford.edu/~jurzay/annurev-fluid-122316-045217.pdf), p. 610
 
 
 ##  Governing Equations
+
+> **This is overwhelming.**  Don't worry about the details now.  We will revisit important parts of this demonstration later on, and you will have several weeks to absorb everything you need.
 
 Fluid flow is completely described by the Navier-Stokes equations, which define continuum hydrodynamics.  For a general conserved quantity $\varphi$, the momentum conservation equations (in cartesian form) are:
 
@@ -126,7 +132,7 @@ $$
 
 (The right-hand side may be non-zero if multiple phases are involved, as this is where phase transitions express themselves mathematically.)
 
-There are a number of matters of taste involved in this derivation, like the sign of the stress tensor, but generally this is the equation one needs to simplify and solve<sup>[[Wikipedia](https://en.wikipedia.org/wiki/Derivation_of_the_Navier%E2%80%93Stokes_equations)]</sup>.
+There are a number of matters of taste involved in this derivation, like the sign of the stress tensor, but generally this is the equation one needs to simplify and solve.  [[Wikipedia](https://en.wikipedia.org/wiki/Derivation_of_the_Navier%E2%80%93Stokes_equations)]
 
 -   Which quantities appear in the Navier–Stokes equations?
 -   Which quantities in the Navier–Stokes equations are conservative?  (In the pressure-based solver, the pressure field is obtained by solving a pressure equation.  In the density-based solver, the continuity equation yields a density field.  In both cases, the velocity field is obtained from the momentum equations.)
@@ -145,7 +151,7 @@ http://aerospace.utoronto.ca/pdf_files/supersonic.pdf p. 10
 
 How good are each of these physical assumptions?  They're a pretty good set for scramjet engines:
 
-- Supersonic flow requires that the external speed is quite high, probably above Mach 2.  This is a baseline assumption of operation for the scramjet so it's a valid assumption.
+- Supersonic flow requires that the external speed is quite high, probably above Mach 2.  This is a baseline assumption of operation for the scramjet so it's a valid assumption.  (In supersonic flows, the Mach number is more relevant than conventional quantities such as the Reynolds number.)
 - Compressibility is a good assumption for flows above Mach 0.3 and shock waves can form for local velocities greater than Mach 1.  [[MAE 5420 Notes](http://mae-nas.eng.usu.edu/MAE_5420_Web/section5/section.5.5.pdf)]
 - Inviscid flow is a reasonable assumption for the parabolized Navier-Stokes equations:  “the viscous terms in the marching direction (which we loosely refer to as streamwise) are negligible.”  [[Schiff & Steger, “Numerical Simulation of Steady Supersonic Viscous Flow”, NASA Technical Paper 1749](https://ntrs.nasa.gov/api/citations/19810013488/downloads/19810013488.pdf)]  (Do not confuse this with _artificial viscosity_, used to stabilize shock waves in simulation and discussed in “Shock Waves.”)
 
@@ -186,6 +192,13 @@ You should download and install MIRGE-Com and Emirge (the operating environment 
 
 - [[Emirge](https://github.com/illinois-ceesd/emirge)]
 
+Every time you use MIRGE-Com, you'll need to load the proper environmental configuration (the point of EMIRGE):
+
+```sh
+cd emirge
+. miniforge3/bin/activate ceesd
+```
+
 MIRGE-Com is in active development.  Expect to pull the base branch you are working on frequently in order to stay up-to-date as new features come online.
 
 If you are unfamiliar with Git and GitHub, please consult this lesson to obtain a working idea of their operation:
@@ -195,7 +208,7 @@ If you are unfamiliar with Git and GitHub, please consult this lesson to obtain 
 
 ##  Exercises
 
-_Our “homework” exercises won't be for credit; we aim for them to be sufficiently enlightening as to be worth your time in completing them._
+_Any “homework” exercises won't be for credit; we aim for them to be sufficiently enlightening as to be worth your time in completing them._
 
 TODO
 

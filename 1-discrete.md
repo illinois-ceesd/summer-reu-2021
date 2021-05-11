@@ -1,5 +1,9 @@
 #   Discretization
 
+* [Slides](./slides/1-discrete.pdf)
+
+---
+
 - Compare and critique meshing and discretization schemes.
 - Identify common modes of numerical error.
 - Produce a mesh suitable for use in MIRGE-Com simulations.
@@ -122,3 +126,23 @@ MIRGE-Com must take into account several situations which require particular car
     > [[Novascone et al., “A Comparison of Thermomechanics Coupling Strategies in Fuel Pin and Pressure Vessel Simulations” INL/CON-12-27510](https://inldigitallibrary.inl.gov/sites/sti/sti/5842302.pdf)] [[archive](https://1library.net/document/qodk670z-comparison-thermomechanics-coupling-strategies-fuel-pressure-vessel-simulations.html)]
 
     MIRGE-Com TODO
+
+
+##  Exercises
+
+- Run the examples `wave-3d.py` and `wave-eager.py` provided with MIRGE-Com.
+
+    ```sh
+    cd emirge
+    . miniforge3/bin/activate ceesd
+    cd mirgecom
+    cd examples
+    python wave-3d.py
+    ```
+
+- Visualize the output of these using ParaView.
+
+    ```sh
+    sudo apt-get install paraview
+    paraview
+    ```

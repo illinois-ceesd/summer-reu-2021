@@ -1,5 +1,9 @@
 #   Grid Data Structures
 
+* [Slides](./slides/2-griddata.pdf)
+
+---
+
 - Describe schemes for representing grids efficiently on a computer.
 - Analyze MIRGE-Com's grid representation scheme.
 
@@ -119,7 +123,9 @@ rhs = (current_step, current_t, current_state) = \
                           t_final=t_final)
 ```
 
-- Examine and run `mirgecom/examples/sod-mpi.py`.
+- Read and run the examples `sod-mpi.py` and `heat-source-mpi.py` provided with MIRGE-Com.
+- Examine the output using ParaView.
+- Modify the domain partition used in one of these codes to utilize more effective ranks (and thus subdivide in more pieces).
 
 
 ##  Distributed Computing
@@ -158,6 +164,7 @@ After that has taken place, the mesh discretization along these points takes pla
 discr = EagerDGDiscretization(actx, local_mesh, order=3, mpi_communicator=comm)
 ```
 
-Grudge seamlessly handles distributed-memory operations through the `_RankBoundaryCommunication` class in `grudge/eager.py`.  This uses non-blocking `Isend`/`Irecv` MPI operations in [MPI4Py](https://mpi4py.readthedocs.io/en/stable/).  Later `Wait` ensures completion before the results are returned and handled.
+Grudge seamlessly handles distributed-memory operations through the `_RankBoundaryCommunication` class in `grudge/eager.py`.  This uses non-blocking `Isend`/`Irecv` MPI operations in [MPI4Py](https://mpi4py.readthedocs.io/en/stable/).  Later `Wait` ensures completion before the results are handled.
 
+- Why are non-blocking processes used here?
 - Examine the distributed-memory functionality block in `grudge/eager.py`.
