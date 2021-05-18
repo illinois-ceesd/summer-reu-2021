@@ -23,17 +23,16 @@ Jet engines all utilize Newton's third law, typically expelling a fluid through 
 
 In schematic form, a chemical rocket is not _air-breathing_ (it has no intake) but carries its own fuel and oxidizer.
 
-![](TODO:rocket-engine-cutaway)
+![https://www.grc.nasa.gov/www/k-12/rocket/lrockth.html](./img/rocket-engine.gif)
 
 **Turbojet**.  A turbojet takes incoming air, passes it through a system of stators and rotors to accelerate it to supersonic velocity, and then burns it to produce an extremely-high-velocity exhaust expelled through a rear nozzle.
 
-![](TODO:turbojet-cutaway)
-https://en.wikipedia.org/wiki/Turbojet#/media/File:Jet_engine.svg
+![https://commons.wikimedia.org/wiki/File:Turbo_ram_scramjet_comparative_diagram.svg](./img/turbojet.png)
 
 **Ramjet**.  A ramjet is a high-speed air-breathing jet engine which mixes air and fuel and emits the exhaust at supersonic speed.  A ramjet has no moving parts, instead relying on fluid dynamics to maintain its operation at speed.
 
-![](TODO:ramjet-cutaway)
-https://en.wikipedia.org/wiki/Scramjet#/media/File:Turbo_ram_scramjet_comparative_diagram.svg
+![https://commons.wikimedia.org/wiki/File:Turbo_ram_scramjet_comparative_diagram.svg](./img/ramjet.png)
+
 https://slideplayer.com/slide/14223195/
 
 The ramjet travels at transonic or supersonic speed.  Intake air strikes the inlet and slows to subsonic velocity inside of the ramjet chamber.  The air mixes with fuel, then reaches the combustion chamber where it is ignited by the pre-existing continuous combustion
@@ -50,8 +49,11 @@ https://en.wikipedia.org/wiki/Scramjet#/media/File:Specific-impulse-kk-20090105.
 
 Scramjets operate in two phases:  an initial warm-up phase in which the combustion and shock patterns establish, then a steady-state operating phase.  Modeling involves examining both phases in a time-dependent simulation.
 
-![](TODO:scramjet-cutaway)
-![](TODO:scramjet-gif)
+![https://commons.wikimedia.org/wiki/File:Turbo_ram_scramjet_comparative_diagram.svg](./img/scramjet.png)
+
+Here is the steady-state temperature distribution.  Note features like standing shockwaves:
+
+![](./img/isolator-ss.png)
 
 - [_The Scramjet Engine:  Processes and Characteristics_](https://www.cambridge.org/core/books/scramjet-engine/introduction/FD1E8A46698975B7209A798860123969) (PDF available via UIUC library)
 - ["NASA's Hypersonic Research Engine Project: A review" (NASA TM-107759)](https://ntrs.nasa.gov/citations/19950006447) (suitable for historical perspective; much work has been done in the 21st century as well)
@@ -137,6 +139,51 @@ There are a number of matters of taste involved in this derivation, like the sig
 -   Which quantities appear in the Navier–Stokes equations?
 -   Which quantities in the Navier–Stokes equations are conservative?  (In the pressure-based solver, the pressure field is obtained by solving a pressure equation.  In the density-based solver, the continuity equation yields a density field.  In both cases, the velocity field is obtained from the momentum equations.)
 
+Some key relationships can be demonstrated in equation form:
+
+**Non-dimensional thrust equation**:
+
+$$
+\frac{T}{\dot{m}_o a_o} = M_o\left(\frac{U_e}{U_o}-1\right)
+$$
+
+**Ratio of inlet to outlet velocity**:
+
+$$
+\frac{U_e}{U_o} = \frac{M_e}{M_o} \sqrt{\frac{T_e}{T_o}}
+$$
+
+**Ramjet specific thrust** (across burner 3→4):
+
+$$
+\frac{T}{\dot{m}_o a_o} = M_o\left(\sqrt{\frac{T_{t4}}{T_{t3}}}-1\right)
+$$
+
+**Energy balance across burner**:
+
+$$
+\dot{m}_f h = \dot{m}_o c_p \left(T_{t4}-T_{t3}\right)
+$$
+
+**Specific impulse**:
+
+$$
+I_{sp} = \frac{T}{\dot{m}_f g}
+$$
+
+**Thrust specific fuel consumption**:
+
+$$
+\text{TSFC} = \frac{\dot{m}_f}{T}
+$$
+
+**Overall efficiency**:
+
+$$
+\eta = \frac{T U_o}{\dot{m}_f h}
+$$
+
+- [Kirk, “MAE 5360:  Hypersonic Airbreathing Engines”](https://slideplayer.com/slide/14223195/)
 
 We make the following assumptions about the flow:
 
@@ -144,16 +191,13 @@ We make the following assumptions about the flow:
 - compressible
 - inviscid (frictionless, zero-viscosity)
 
-TODO
-https://slideplayer.com/slide/14223195/ slide #3
-
-http://aerospace.utoronto.ca/pdf_files/supersonic.pdf p. 10
-
 How good are each of these physical assumptions?  They're a pretty good set for scramjet engines:
 
 - Supersonic flow requires that the external speed is quite high, probably above Mach 2.  This is a baseline assumption of operation for the scramjet so it's a valid assumption.  (In supersonic flows, the Mach number is more relevant than conventional quantities such as the Reynolds number.)
 - Compressibility is a good assumption for flows above Mach 0.3 and shock waves can form for local velocities greater than Mach 1.  [[MAE 5420 Notes](http://mae-nas.eng.usu.edu/MAE_5420_Web/section5/section.5.5.pdf)]
 - Inviscid flow is a reasonable assumption for the parabolized Navier-Stokes equations:  “the viscous terms in the marching direction (which we loosely refer to as streamwise) are negligible.”  [[Schiff & Steger, “Numerical Simulation of Steady Supersonic Viscous Flow”, NASA Technical Paper 1749](https://ntrs.nasa.gov/api/citations/19810013488/downloads/19810013488.pdf)]  (Do not confuse this with _artificial viscosity_, used to stabilize shock waves in simulation and discussed in “Shock Waves.”)
+
+![http://aerospace.utoronto.ca/pdf_files/supersonic.pdf](https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Mach_cone.svg/500px-Mach_cone.svg.png)
 
 
 ##  Experimental Data
@@ -164,12 +208,17 @@ Scramjet observational data are obtained two ways:  from wind tunnel experiments
 
 Experimental observational data differ substantially from computer modeling because different quantities can be obtained from each.  A computer model possesses full state information and pointwise queries such as 3D velocity and chemical composition can be trivially queried.  In contrast, experimental data must be carefully acquired and carefully interpreted.
 
-types of experimental data
+Data which can be obtained experimentally include:
 
-HIFiRE-3
-TODO
+- Temperature and pressure distributions along various lines
+- Thrust and performance under various conditions
+- Fuel composition at sample points.
 
 We will discuss experimental data in more detail in “Verification & Validation and Software Quality”.
+
+- [Bowcutt et al., “HIFiRE:  An International Collaboration to Advance the Science and Technology of Hypersonic Flight”](https://www.icas.org/ICAS_ARCHIVE/ICAS2012/PAPERS/998.PDF)
+- [“Scramjet programs”](https://en.wikipedia.org/wiki/Scramjet_programs)
+- [Smart et al., “Flight Data Analysis of the HyShot 2 Scramjet Flight Experiment”](https://arc.aiaa.org/doi/10.2514/1.20661)
 
 
 ##  Challenges
@@ -210,17 +259,16 @@ If you are unfamiliar with Git and GitHub, please consult this lesson to obtain 
 
 _Any “homework” exercises won't be for credit; we aim for them to be sufficiently enlightening as to be worth your time in completing them._
 
-TODO
-
 1.  Plot $\frac{T}{\dot{m_a}}$ and $\frac{T}{\dot{m_a}a_0}$ v. Mach number $M$ from 1 to 5.
 2.  Plot TSFC v. Mach number $M$ from 1 to 5.
 3.  Plot Isp v. Mach number $M from 1 to 5.
 4.  Plot thermal, propulsive, and overall efficiency v. Mach number $M$ from 1 to 5.
 
+given data:
+
 - $Q_R = 48,000 \,\text{kJ}/\text{kg}$ for _n_-decane
 - 55,500 methane
 - 141,800 hydrogen
+- maximum combustion $T = 2000 \,\text{K}$
 
-maximum combustion 2000 K
-
-(based on an exercise by [D R Kirk, "Hypersonic Airbreathing Engines"](https://slideplayer.com/slide/14223195/))
+(Based on an exercise by [D R Kirk, "Hypersonic Airbreathing Engines"](https://slideplayer.com/slide/14223195/).)

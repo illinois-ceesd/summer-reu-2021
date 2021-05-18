@@ -138,11 +138,11 @@ np.isclose( a, b, rtol=1e-05, atol=1e-08)
 np.allclose(a, b, rtol=1e-05, atol=1e-08)
 ```
 
-This is how floating-point values are _actually_ represented in the machine.  It's rather complicated, and mostly handled by the hardware.
+This is how floating-point values are _actually_ represented in the machine.  It's elegant if obscure, and mostly it is handled by the hardware.
 
-![](repo:./img/floating-point.png)
+![](./img/floating-point.png)
 
--   D. Goldberg, [What every computer scientist should know about floating-point arithmetic](http://perso.ens-lyon.fr/jean-michel.muller/goldberg.pdf)
+-   [Goldberg, “What every computer scientist should know about floating-point arithmetic”](http://perso.ens-lyon.fr/jean-michel.muller/goldberg.pdf)
 
 ### Truncation Error
 
