@@ -136,8 +136,9 @@ $$
 
 There are a number of matters of taste involved in this derivation, like the sign of the stress tensor, but generally this is the equation one needs to simplify and solve.  [[Wikipedia](https://en.wikipedia.org/wiki/Derivation_of_the_Navier%E2%80%93Stokes_equations)]
 
--   Which quantities appear in the Navier–Stokes equations?
--   Which quantities in the Navier–Stokes equations are conservative?  (In the pressure-based solver, the pressure field is obtained by solving a pressure equation.  In the density-based solver, the continuity equation yields a density field.  In both cases, the velocity field is obtained from the momentum equations.)
+- Which quantities appear in the Navier–Stokes equations?
+- Which quantities in the Navier–Stokes equations are conservative?  (In the pressure-based solver, the pressure field is obtained by solving a pressure equation.  In the density-based solver, the continuity equation yields a density field.  In both cases, the velocity field is obtained from the momentum equations.)
+- Compare equations to the [canonical MIRGE-Com formulation](https://mirgecom.readthedocs.io/en/latest/fluid.html).
 
 Some key relationships can be demonstrated in equation form:
 

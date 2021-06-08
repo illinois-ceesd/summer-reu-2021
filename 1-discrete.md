@@ -68,9 +68,21 @@ Given a mesh of elements, we must select a numerical method which converges on a
 
 MIRGE-Com implements a nodal discrete Galerkin finite element method.  This blends aspects of nodal methods, finite element methods, and finite volume methods.  Since you probably haven't done much numerical work yet, let's break down what these things mean.
 
-**Nodal Methods**.  Nodal (or _spectral_) methods utilize Lagrange polynomials to
+**Nodal Methods**.  Nodal (or _spectral_) methods utilize Lagrange polynomials; as structured here, this approach requires relatively fewer data points per represented wavelength (and thus fewer memory accesses) but with a slightly higher arithmetic intensity.
 
-- [[Wolfram Language Documentation, “`FiniteElementMethod`,” section “Two-Dimensional Shape Functions”](https://reference.wolfram.com/applications/structural/FiniteElementMethod.html)]
+- [Kloeckner, “ModePy”](https://documen.tician.de/modepy/modes.html)
+- [Wolfram Language Documentation, “`FiniteElementMethod`”, section “Two-Dimensional Shape Functions”](https://reference.wolfram.com/applications/structural/FiniteElementMethod.html)
+
+To see the structure of particular elements, use `modepy`:
+
+```sh
+$ cd mirgecom/modepy/examples
+$ python plot-nodes.py
+```
+
+You can play around with the options to generate different nodal configurations.
+
+![](./img/dg-2-10.png)
 
 **Finite Element Methods**.  FEM describes a collection of methods which write a descriptive approximation of a differential equation over a particular subregion of a problem.  FEM is well-suited to structural mechanics problems and coupled systems of differential equations.
 
@@ -84,7 +96,7 @@ MIRGE-Com implements a nodal discrete Galerkin finite element method.  This blen
 
     If we load a solved example problem, we can see the nodal elements:
 
-    ![](TODO)
+    ![](./img/galerkin-elements.png)
 
 - **Discrete Galerkin**.  We use weak-form finite volume methods (thus integrals wrapped around conservation laws).
 - **Finite element**.  We implement all of this on single elements which are converged to a consistent mathematical solution of the entire region which satisfies the governing equations including boundary conditions.
@@ -111,9 +123,25 @@ Grudge is a library written to discretize discontinuous Galerkin operators, exac
 
 MIRGE-Com must take into account several situations which require particular care to get right:
 
-1. Boundary conditions (`boundary.py`).  TODO
+1. Boundary conditions (`boundary.py`).  MIRGE-Com currently provides an adiabatic slip boundary (reflective inviscid wall boundary) and a user-defined function boundary.
 
-2. Shock wave discontinuities.  Discontinuities can cause trouble for many numerical methods, such as gradual diffusion rather than preservation of the physically-expected sharp boundary.  MIRGE-Com handles these using the Grudge discretizer, which is designed to handle [discontinuous Galerkin](https://en.wikipedia.org/wiki/Discontinuous_Galerkin_method) elements, which are piecewise continuous rather than continuous.
+    $$\mathbf{q^{+}} = [\rho^{-}, (\rho{E})^{-}, (\rho\vec{V})^{-} - 2((\rho\vec{V})^{-}\cdot\hat{\mathbf{n}}) \hat{\mathbf{n}}]$$
+
+    The adiabatic slip condition is appropriate for modeling shockwaves.
+
+    ![](./img/poinsot-waves.png)
+
+    > Slip walls are useful boundary conditions in some computations. They are characterized by only one inviscid condition: the normal velocity at the wall is zero $(u,(L, x2, x3, t) = 0)$. The viscous relations correspond to zero tangential stresses and a zero heat flux through the wall. As the normal velocity is zero, the amplitudes $L_2$, $L_3$, and $L_4$ [of the shockwaves] are zero. One wave $L_5$ is leaving the computation domain through the wall while a reflected wave $L_1$, is entering the domain:
+    >
+    > Step 1. The velocity $u_1$ normal to the wall is zero ….
+    >
+    > Step 2. [The local one-dimensional inviscid] relation $\frac{\partial u_1}{\partial t} + \frac{1}{2\rho c} \left( L_5 - L_1 \right) = 0$ suggests that the amplitude of the reflected wave should be: $L_1 = L_5$.
+    >
+    > Step 3. $L_5$ is computed from interior points and $L_1$ is set to $L_5$. The derivatives along $x_1$ of the tangential viscous stresses $\tau_{12}$, $\tau_{13}$ and of the normal heat flux $q_1$ at the wall are computed using the viscous conditions at the wall: $q_1 = 0$, $\tau_{12} = \tau_{13} = 0$.
+
+    - [Poinsot & Lee, “Boundary Conditions for Direct Simulations of Compressible Viscous Flows”](http://acoustics.ae.illinois.edu/pdfs/poinsot-lele-1992.pdf)
+
+2. Shock wave discontinuities.  Discontinuities can cause trouble for many numerical methods, such as gradual diffusion rather than preservation of the physically-expected sharp boundary.  MIRGE-Com handles these using the Grudge discretizer, which is designed to handle [discontinuous Galerkin](https://en.wikipedia.org/wiki/Discontinuous_Galerkin_method) elements, which are _piecewise continuous_ rather than continuous.
 
 3. Coupled differential equations (`eos.py`, _passim_).  Given a set of differential equations which rely on each other's state values for solution behavior, find a computational method which allows you to stably converge on valid solutions.  For instance, if flow, heat flux, and temperature all interdepend, how should you build a solver?
 
@@ -125,7 +153,7 @@ MIRGE-Com must take into account several situations which require particular car
     >
     > [[Novascone et al., “A Comparison of Thermomechanics Coupling Strategies in Fuel Pin and Pressure Vessel Simulations” INL/CON-12-27510](https://inldigitallibrary.inl.gov/sites/sti/sti/5842302.pdf)] [[archive](https://1library.net/document/qodk670z-comparison-thermomechanics-coupling-strategies-fuel-pressure-vessel-simulations.html)]
 
-    MIRGE-Com TODO
+    MIRGE-Com is at the early stages of introducing physics coupling into the project.  Quantities are calculated in a tightly-coupled manner at this point because the differential equation statements are simply plugged into the RK4 solver in `integrators.py`.  See also `steppers.py` (to see how the time resolution occurs), `diffusion.py` (for examples of physics statements), and `wave.py` (for the wave operator, the right-hand side of the wave equation).
 
 
 ##  Exercises

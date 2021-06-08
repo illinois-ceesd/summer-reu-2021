@@ -52,6 +52,7 @@ Matrix conditioning
 
 TODO
 
+
 **Numerical Issues**.  not all DE solution methods can be written in a matrix form
 
 ##  Implicit

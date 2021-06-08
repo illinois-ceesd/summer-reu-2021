@@ -20,7 +20,7 @@ wherein fuel and oxidizer combine (in the presence of sufficient heat) to produc
 
 This reaction requires heat, which is another way of saying that it has a characteristic _activation energy_, necessary for two molecules in near contact to actually react.
 
-![](TODO:img/h2-o2-rxn.png)
+![](https://lightcat-files.s3.amazonaws.com/problem_images/d74d1e86ee432859-1592923071592.jpg)
 
 Given sufficient energy, the likelihood that two molecules jostle each other with enough force to mutually cross the activation energy barrier and react increases exponentially in temperature.
 
