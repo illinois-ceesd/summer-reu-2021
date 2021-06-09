@@ -48,7 +48,7 @@ This is correct, but is quite often computationally inefficient to achieve.  For
 
 LU/QR factorization
 
-Matrix conditioning
+[Matrix conditioning](https://en.wikipedia.org/wiki/Condition_number)
 
 TODO
 
