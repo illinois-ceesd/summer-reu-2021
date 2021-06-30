@@ -8,7 +8,7 @@ These tutorials are designed to acquaint undergraduate computer science and engi
 0. [The Physics of Scramjets](./0-physics.md) · 6/14 (Mon)
 1. [Discretization & Mapping](./1-discrete.md) · 6/25 (Fri)
 2. [Grid Data Structures](./2-griddata.md) · 7/2 (Fri)
-3. [Transport on Grids](./3-transport.md) · 7/9 (Fri)
+3. [Transport on Grids](./3-transport.md) · 7/12 (Mon)
 4. [Matrix Solvers & Conditioning](./4-solvers.md) · 7/16 (Fri)
 5. [Shock Modeling](./5-shocks.md) · 7/23 (Fri)
 6. [Software Quality/V&V](./6-verval.md) · 7/30 (Fri)
@@ -23,7 +23,7 @@ These tutorials are designed to acquaint undergraduate computer science and engi
 
 ---
 
-A more full model I use for thinking about computational fluid dynamics follows.  We cover most of these points at least glancingly, except for discrete simulation methods, wall functions, turbulence modeling, time-resolved (transient) flow, and many particulars of HPC execution.
+The full model I use for thinking about computational fluid dynamics follows.  We cover most of these points at least glancingly, except for discrete simulation methods, wall functions, turbulence modeling, time-resolved (transient) flow, and many particulars of HPC execution.
 
 -   Physics
     -   Problem Statement
