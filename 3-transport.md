@@ -8,29 +8,40 @@
 - Enumerate reasons for drift in conserved state variables.
 - Diagnose transport issues for a particular mesh–element scheme.
 
-##  
+##  Control Volumes
 
-To monitor this situation, we frequently employ global balance equations, which watch for drift in the sum of state variables.
+We have previously discussed the control volume as a defined volume-spanning unit (finite or infinitesimal) over which we may write balance equations.
+
+![](https://www.researchgate.net/profile/Yucheng-Liu-17/publication/262561974/figure/fig1/AS:296858703417344@1447788038195/The-conservation-of-mass-in-an-infinitesimal-control-volume-of-fluid-2.png)
+
+If we re-examine the Navier-Stokes equations, we find that the left-hand side represents change over time (zero at steady state), while the right-hand side has terms representing material changes due to:
+
+1. Convection (physical flow)
+2. Diffusion (physical dispersal)
+3. Sources & sinks (creation or destruction) (When are these appropriate?)
+
+Every element in the grid has a corresponding balance equation, but rather than monitor at the element level, we prefer to monitor at the surface level—that is, surface flux.  (We'll come back to this in a moment.)
+
+Even if we have source or sink terms present, we expect the entire system to remain either constant in mass and other properties, or we know the specific rate of injection or depletion of those quantities.  (For instance, a control volume drawn over a chemical rocket may lose mass over time.)
+
+To monitor this situation, we frequently employ global balance equations, which watch for drift in the sum of state variables.  (How are these implemented in a distributed calculation?)
 
 
-Euler's equations of gas dynamics:
+For instance, here are the equations describing gas dynamics in this system:
 
-.. math::
-
-    \partial_t \mathbf{Q} = -\nabla\cdot{\mathbf{F}} +
-    (\mathbf{F}\cdot\hat{n})_{\partial\Omega} + \mathbf{S}
+$$
+\partial_t \mathbf{Q} = -\nabla\cdot{\mathbf{F}} +
+(\mathbf{F}\cdot\hat{n})_{\partial\Omega} + \mathbf{S}
+$$
 
 where:
 
--   state $\mathbf{Q} = [\rho, \rho{E}, \rho\vec{V} ]$
--   flux $\mathbf{F} = [\rho\vec{V},(\rho{E} + p)\vec{V},
-    (\rho(\vec{V}\otimes\vec{V}) + p*\mathbf{I})]$,
--   domain boundary $\partial\Omega$,
--   sources $\mathbf{S} = [{(\partial_t{\rho})}_s,
-    {(\partial_t{\rho{E}})}_s, {(\partial_t{\rho\vec{V}})}_s]$
+- state $\mathbf{Q} = [\rho, \rho{E}, \rho\vec{V} ]$
+- flux $\mathbf{F} = [\rho\vec{V},(\rho{E} + p)\vec{V},(\rho(\vec{V}\otimes\vec{V}) + p*\mathbf{I})]$,
+- domain boundary $\partial\Omega$,
+- sources $\mathbf{S} = [{(\partial_t{\rho})}_s, {(\partial_t{\rho{E}})}_s, {(\partial_t{\rho\vec{V}})}_s]$
 
-
-TODO mirgecom/euler.py:_facial_flux
+* Examine `mirgecom/euler.py:_facial_flux`.
 
 ##  Surface Flux
 
@@ -69,9 +80,20 @@ $$
 
 *This result conserves quantities extremely well, the primary advantage of FVM.*
 
-#### Gaussian Quadrature
+#### Quadrature
 
-A conventional means of solution for the surface flux exploits the technique of Gaussian quadrature.  *Gaussian quadrature* integrates across the domain by evaluating the integrand at selected points and weighting the values by certain rules.  For instance, to evaluate
+_Quadrature_ refers to numerical integration.  At the conceptually simplest end, this can simply be using something like the trapezoid rule to evaluate an integral:
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Integration_num_trapezes_notation.svg/716px-Integration_num_trapezes_notation.svg.png)
+
+The surface flux integral is typically written as a double integral over $x$ and $y$ (or whatever coordinate system is in play, such as $\phi$, $h$ for a cylindrical coordinate system).
+
+$$
+\int_{\text{face}} \vec{J}^{\varphi}_{\text{face}}
+= \int dx \int dy \, \vec{J}^{\varphi}(x,y)
+$$
+
+Numericists have improved methods far beyond this point, however, such as using Richardson extrapolation to cleverly cancel error terms.  One conventional means of solution for the surface flux exploits the technique of Gaussian quadrature.  *Gaussian quadrature* integrates across the domain by evaluating the integrand at selected points and weighting the values by certain rules.  For instance, to evaluate
 
 $$
 \int_{-1}^{+1} dx \, e^{-x}
@@ -85,16 +107,15 @@ with a 2-point quadrature, one calculates as follows:
 | $+\sqrt{1/3}$ | $1.7813$ | 1     | $1.7813$     |
 |               |          |       | $\sum_i w_i e^{-x} = 2.3427$ |
 
-The absolute error is $2.3504 - 2.3427 = 0.0077$, and the method is far more efficient for most practical integrals than other rules of integration.
+The absolute error is $2.3504 - 2.3427 = 0.0077$, and the method is far more efficient for most practical integrals than other rules of integration.  Gaussian quadrature is most appropriate when the integrand is relatively less expensive than the integration itself, which applies to many cases without analytical solutions.
 
 A very similar technique holds for surface integration of the flux.
-
 
 <img src="./img/fvm-cell-quadrature-face.png" width="80%"/>
 
 **Figure**.  Surface flux integration with one, two, and three quadrature points per cell face.
 
-
+(If you set things up properly, your nodes in each element correspond to your numerical quadrature points!)
 
 ##  Error Sources
 
@@ -146,76 +167,50 @@ This is how floating-point values are _actually_ represented in the machine.  It
 
 ### Truncation Error
 
-When we produce a finite-difference approximation, we are in essence taking a Taylor series expansion about a particular point and chopping off the higher-order terms in $h$:
+When we produce a finite-difference approximation, we are in essence taking a Taylor series expansion about a particular point and chopping off the higher-order terms in $h$.
 
 $$
-
+f(x)
+\rightarrow
+f(a)+\frac {f'(a)}{1!} (x-a)+ \frac{f''(a)}{2!} (x-a)^2+\frac{f'''(a)}{3!}(x-a)^3+ \cdots
+\approx
+f(a)+\frac {f'(a)}{1!} (x-a)+ \frac{f''(a)}{2!} (x-a)^2+O(h^3)
 $$
 
-This means that the expression carries a certain amount of error, sometimes left implicit but always present:
+for a second-order approximation with third-order error term.  This means that the approximate expression carries a certain amount of error, sometimes left implicit but always present:
 
 $$
-
+O(h^3)
+=
+\frac{f'''(a)}{3!}(x-a)^3+\frac{f^{(4)}(a)}{4!}(x-a)^4+\frac{f^{(5)}(a)}{5!}(x-a)^5+ \cdots
 $$
 
 Truncation error means that numerical calculations produce pseudo-physical results, or behaviors that appear to mimic physical phenomena but are not in fact real.  We call the most important of these _numerical dispersion_ and _numerical diffusion_.
 
-Physical dispersion arises under circumstances where waves of a fluid do not travel at the same speed, so they separate gradually.  (This can happen due to frequency or amplitude differences.)  In some media, we expect this of waves, but numerical dispersion mimics this phenomenon incorrectly.
+Numerical dispersion arises from odd-ordered derivative terms in the truncation error.  Physical dispersion arises under circumstances where waves of a fluid do not travel at the same speed, so they separate gradually.  (This can happen due to frequency or amplitude differences.)  In some media, we expect this of waves, but numerical dispersion mimics this phenomenon incorrectly.  Physical dispersion spreads waves out.  In an analogous way, numerical dispersion will lead to phase errors (erroneous wiggles) in the solution.
 
-http://www.mathematik.uni-dortmund.de/~kuzmin/cfdintro/lecture10.pdf
+![](http://www.jick.net/~jess/hr/skept/GWP/packet1.gif)
 
-Physical diffusion
+![](error-dispersion.png)
 
+Numerical diffusion arises from even-ordered derivative terms in the truncation error.  Physical diffusion will cause waves to soften, and similarly numerical diffusion will smear out and dissipate waves, in particular smoothing out sharp fronts as discontinuities.  (This is something to be attentive to in a supersonic system with shock waves present.)
 
-The most common way to think about truncation error is that we are inexactly solving an exact expression.  It's also possible to flip the statement:  we are exactly solving an inexact expression.  Sometimes this latter approach is fruitful in reasoning about how and whether to worry about numerical error sources in a calculation.
+![](error-diffusion.png)
 
----
-From the numerical point of view, numerical diffusion and dispersion reflect on the properties of the spatial discretisation employed:
+The most common way to think about truncation error is that we are inexactly solving an exact expression.  It's also possible to flip the statement:  we are _exactly_ solving an _inexact_ expression.  Sometimes this latter approach is fruitful in reasoning about how and whether to worry about numerical error sources in a calculation.
 
-- numerical diffusion indicates that the space discretisation operator will tend to smooth out sharp front/discontinuities, i.e. instead of having a sharp interface over 1 cell the space discretisation operator will spread it over a few cells;
+- [Brewer, “Gaussian Wave Packets”](http://www.jick.net/~jess/hr/skept/GWP/)
+- [Kuzmin, “Analysis of numerical dissipation and dispersion”](http://www.mathematik.tu-dortmund.de/~kuzmin/cfdintro/lecture10.pdf)
 
-- numerical dispersion refers to the properties of the space discretisation operator in not generating too high gradients, i.e. if you have a scalar between 0 and 1 with a sharp interface, the space discretisation operator will leads to value below 0 or exceeding 1.
-
-From a practical point of view:
+> From a practical point of view:
 - an upwind discretisation scheme will have high numerical diffusion and low dispersion;
 - a central or high order discretisation scheme (with no limiter) will have low numerical diffusion and high dispersion;
 - a limited discretisation scheme tries to have the best of both world.
 
-From mathematics, diffusion arises from highest term in truncation error is a factor of even order difference (\frac{\partial ^2}{\partial x^2} و \frac{\partial ^4}{\partial x^4} , ...) , however in numerical dispersion that is in odd order of difference (\frac{\partial ^3}{\partial x^3} و \frac{\partial ^5}{\partial x^5} , ...).
-
-
-Based on h.Jasak (1999), high resolution NVD differencing scheme for arbitrarily unstructured mesh paper, we would have a numerical diffusion if:
-1.the highest of the truncation error includes ODD-ORDER spatial derivatives, the solution will be affected by a certain amount of numerical diffusion
-2. If on the other hand, the leading truncation term include EVEN-ORDER spatial derivatives numerical dispersion occurs.
-[I really think this is backwards!]
-
-https://www.cfd-online.com/Forums/main/84744-what-difference-between-diffusion-dispersion.html
-
-in mathematical view, numerical diffusion is created when the highest term in truncation error is a factor of even order difference (\frac{\partial ^2}{\partial x^2} و \frac{\partial ^4}{\partial x^4} , ...) , however in numerical dispersion that is in odd order of difference (\frac{\partial ^3}{\partial x^3} و \frac{\partial ^5}{\partial x^5} , ...).
-hadian is offline  	Reply With Quote
-
-Old   February 10, 2011, 20:11
-Default
-  #7
-dut_thinker
-New Member
-
-Join Date: Feb 2010
-Posts: 12
-Rep Power: 13
-dut_thinker is on a distinguished road
-Thanks for your reply, hadian.
-Maybe it could be understood in this way. Just as you said, while the trunction error is even order difference, like diffusion equation it has diffusion characteristic; while the trunciton error is odd order difference, like advection equaiton, it will be propagated like wave.
-
-Dear Hadian,
-I guess you made a mistake in describing of EVEN-ODD ORDERS
-Based on h.Jasak (1999), high resolution NVD differencing scheme for arbitrarily unstructured mesh paper, we would have a numerical diffusion if:
-1.the highest of the truncation error includes ODD-ORDER spatial derivatives, the solution will be affected by a certain amount of numerical diffusion
-2. If on the other hand, the leading truncation term include EVEN-ORDER spatial derivatives numerical dispersion occurs.
-
----
+- [CFD Online Forums, “What's the difference between diffusion and dispersion?”](https://www.cfd-online.com/Forums/main/84744-what-difference-between-diffusion-dispersion.html)
 
 ##  Boundary Conditions
 
-`boundary.py`
-`diffusion.py`
+* Examine `mirgecom/diffusion.py:diffusion_operator` ($\nabla\cdot(\alpha\nabla u)$), `DirichletDiffusionBoundary` (specified), `NeumannDiffusionBoundary` (derivative).
+
+* Examine `mirgecom/boundary.py:AdiabaticSlipBoundary`.
