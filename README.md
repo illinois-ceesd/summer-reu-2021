@@ -17,13 +17,13 @@ These tutorials are designed to acquaint undergraduate computer science and engi
 
 ## Expected Background
 
-- **Python**.  MIRGE-Com is written in Python; although I make oblique explanatory references to other languages like C, only familiarity with Python is expected to complete these lessons and contribute to MIRGE-Com.
-- **Physics**.  I do not assume any particular background in physics or engineering other than a freshman-physics understanding of heat transfer, conservation laws, etc.; other properties are derived.  Naturally, you will glean greater insight given a more advanced background.
-- **Mathematics**.  You will need calculus (at least Cal 1, but Cal 3 preferred) and some basic linear algebra.  Numerical analysis is helpful as well.
+- **Python**.  MIRGE-Com is written in Python; although the lessons make oblique explanatory references to other languages like C, only familiarity with Python is expected to complete these lessons and contribute to MIRGE-Com.
+- **Physics**.  The lessons do not assume any particular background in physics or engineering other than a freshman-physics understanding of heat transfer, conservation laws, etc.; other properties are derived.  Naturally, the student will glean greater insight given a more advanced background.
+- **Mathematics**.  The student will need calculus (at least Cal 1, but Cal 3 preferred) and some basic linear algebra.  Numerical analysis is helpful as well.
 
 ---
 
-The full model I use for thinking about computational fluid dynamics follows.  We cover most of these points at least glancingly, except for discrete simulation methods, wall functions, turbulence modeling, time-resolved (transient) flow, and many particulars of HPC execution.
+The lessons cover most of the following points at least glancingly, except for discrete simulation methods, wall functions, turbulence modeling, time-resolved (transient) flow, and particulars of HPC execution.
 
 -   Physics
     -   Problem Statement
@@ -39,9 +39,10 @@ The full model I use for thinking about computational fluid dynamics follows.  W
 -   Discretization
     -   Discretization Method
     -   Accuracy
-    -   Implicit v. Explicit
+    -   Implicit v. Explicit Formulations
+    -   Elements
 -   Solution
-    -   Algorithm Development
+    -   Algorithms
         -   Traditional Methods:
             -   Finite Difference Method (FDM)
             -   Finite Element Method (FEM)
@@ -56,7 +57,7 @@ The full model I use for thinking about computational fluid dynamics follows.  W
             -   stochastic rotation dynamics (SRD)
             -   molecular dynamics (MD)
             -   hybrid methods
-    -   Steady v. Transient
+    -   Steady-State v. Transient Flow
     -   Simulation Execution
         -   HPC capability computing (maximum compute power to solve a single large problem in the shortest amount of time)
         -   HPC capacity computing (most efficient configuration to solve multiple complex problems simultaneously)
@@ -68,7 +69,7 @@ The full model I use for thinking about computational fluid dynamics follows.  W
 
 ---
 
-These tutorials were prepared by N E Davis for the [Center for Exascale-Enabled Scramjet Design](https://ceesd.illinois.edu/) in 2021.  The program's design was inspired by the [Los Alamos National Laboratory Computational Physics Student Summer Workshop](https://www.lanl.gov/org/padwp/adx/computational-physics/summer-workshop/index.php).  Some material draws from my 2015–16 course ME 498CF “Computational Fluid Dynamics”.
+These tutorials were prepared by N E Davis for the [Center for Exascale-Enabled Scramjet Design](https://ceesd.illinois.edu/) in 2021.  The program's design was inspired by the [Los Alamos National Laboratory Computational Physics Student Summer Workshop](https://www.lanl.gov/org/padwp/adx/computational-physics/summer-workshop/index.php).  Some material draws from the 2015–16 course ME 498CF “Computational Fluid Dynamics”.
 
 All materials are produced under the aegis of the University of Illinois, ©2021.  I (N E Davis) furthermore make the materials available under a [CC-BY](https://creativecommons.org/licenses/by/4.0/) license.
 
