@@ -1,9 +1,5 @@
 #   Grid Data Structures
 
-* [Slides](./slides/2-griddata.pdf)
-
----
-
 - Describe schemes for representing grids efficiently on a computer.
 - Analyze MIRGE-Com's grid representation scheme.
 

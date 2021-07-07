@@ -1,9 +1,5 @@
 #   Transport and Flux on a Grid
 
-* [Slides](./slides/3-transport.pdf)
-
----
-
 - Write inter-element flux equations.
 - Enumerate reasons for drift in conserved state variables.
 - Diagnose transport issues for a particular mesh–element scheme.
