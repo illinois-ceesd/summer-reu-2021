@@ -1,16 +1,10 @@
 #   Chemical Reactivity in Flows
 
-* [Slides](./slides/7-chemrxn.pdf)
-
----
-
--   Understand various models of chemical reactivity and combustion
--   Model a reacting flow
-
+-   Understand various models of chemical reactivity and combustion.
 
 ##  Combustion Chemistry
 
-Anyone out of high school chemistry can write and understand the basic expression of burning hydrogen:
+With some high school chemistry, you can write and understand the basic expression of burning hydrogen:
 
 $$
 2\text{H}_2 + \text{O}_2 → 2\text{H}_2\text{O}
@@ -59,22 +53,56 @@ There are actually dozens of relations which can be written over a whole host of
 
 Such a complex system consideration of both chemical equilibria (the energetic favorable states at a given temperature and pressure) and chemical kinetics (the rates of reaction given species concentrations and transport).
 
-**Thermodynamic equilibrium**.  The [JANAF](https://janaf.nist.gov/) tables are customarily used to calculate chemical equilibria based on Gibbs free energy $\Delta G$.  This is a _relatively_ straightforward calculation, about junior-level in physical chemistry or chemical engineering.
-
-TODO thermodynamics
-$$
-\sum_{\text{min}}
-$$
-
-**Chemical kinetics**.
-
-TODO kinetics
-
 - [Argonne National Laboratory, “The Complex Chemistry of Combustion”](https://www.anl.gov/article/the-complex-chemistry-of-combustion)
 - [Davis et al., “An optimized kinetic model of H2/CO combustion”  _Proceedings of the Combustion Institute, 30_, pp. 1283–1292](http://ignis.usc.edu/Mechanisms/H2-CO/h2-co.pdf), esp. the table on p. 1284
+- [Goussis, Maas, _Turbulent Combustion Modeling_](https://link.springer.com/book/10.1007/978-94-007-0412-1) (this one is worth perusing casually)
 - [Green, “Combustion & Fuels:  Chemistry & Kinetics”, _Combustion Summer School 2017_](https://cefrc.princeton.edu/sites/cefrc/files/combustion-summer-school/lecture-notes/2017_Green_All_combined.pdf)
 - [Wang, “Combustion Chemistry”, _Combustion Summer School 2015_](https://cefrc.princeton.edu/sites/cefrc/files/Files/2015%20Lecture%20Notes/Wang/Lecture-3-Basic-Chemical-Kinetics.pdf)
 
+**Thermodynamic equilibrium**.  The [JANAF](https://janaf.nist.gov/) tables are customarily used to calculate chemical equilibria based on Gibbs free energy $\Delta G$.  This is a _relatively_ straightforward calculation, about junior-level in physical chemistry or chemical engineering (on paper).
+
+> The general idea behind thermochemical equilibrium is that all spontaneous reactions occur in the direction that increases the overall entropy of the universe (meaning both the system under consideration and the surroundings that represent the rest of the universe). When the composition of the system arrives at a point where the total entropy for the system plus surroundings reaches a maximum, it becomes "stuck" since movement in any direction in composition space involves an entropy decrease, and thus cannot spontaneously occur without violating the second law. Thus, the equilibrium state we seek is this end state, which is reached by all spontaneously reacting systems if given enough time.
+
+Minimize
+
+$$
+n G
+=
+\sum_{i=1}^{N} n_i \bar{G}_i
+=
+\sum n_i \Delta G^0_{fi} + \sum n_i RT \textrm{ln}\, P + \sum n_i RT \textrm{ln}\, y_i + \sum n_i RT \textrm{ln} \hat{\phi}_i
+$$
+
+subject to elemental balances
+
+$$
+\sum_{i=1}^{N} n_i a_{ji} = b_j
+$$
+
+for species $j = 1, ..., N$.
+
+- [“General Gibbs Minimization as an Approach to Equilibrium”](https://courses.washington.edu/mengr524/sp15/handouts/gibbs_min.pdf)
+- [Kitchin, “Gibbs energy minimization and the NIST webbook”](https://kitchingroup.cheme.cmu.edu/blog/2013/03/01/Gibbs-energy-minimization-and-the-NIST-webbook/)
+- [Lwin, “Chemical Equilibrium by Gibbs Energy Minimization on Spreadsheets”](https://www.ijee.ie/articles/Vol16-4/Ijee1157.pdf)
+- [Rossi, “Gibbs free energy minimization for the calculation of chemical and phase equilibrium using linear programming”](https://www.sciencedirect.com/science/article/abs/pii/S0378381209000223)
+
+**Chemical kinetics**.  While the thermodynamic equilibria matter to the end state of the system, the rate governs how long it takes to get there.  (Think about a diamond turning back into graphite over millions of years!)  Chemical kinetics incorporate information about reaction rates and activation energies to describe
+
+Aside from [transition state theory](https://www.vedantu.com/chemistry/transition-state-theory) (developed by [Polanyi and Eyring](https://onlinelibrary.wiley.com/doi/full/10.1002/jcc.20527)), chemical kinetics are disjoint from thermodynamic considerations.
+
+$$
+\textrm{reaction rate}
+=
+\frac{\textrm{change in } B}{\textrm{change in time}}
+=
+\frac{\Delta B}{\Delta t}
+$$
+
+Amounts of a species may be represented as total moles, mole fraction, partial pressure, concentration, etc.  Since reactants can only flow forward in a combusting supersonic system like a scramjet, we can also map $x$ to reaction progress, calling this the _reaction progress coordinate_.  (At steady state, we can also do the same with $t$ for the velocity of flow.)
+
+Reaction rate is a function of temperature.  Pressure matters inasmuch as it affects concentration and equilibrium state.  Chemical mixing may be assumed to be complete or imperfect depending on the system.
+
+- [Brown, LeMay, Busten, Murphy, Woodward, “Chemical Kinetics”](https://chem.libretexts.org/Bookshelves/General_Chemistry/Map%3A_Chemistry_-_The_Central_Science_(Brown_et_al.)/14%3A_Chemical_Kinetics/14.S%3A_Chemical_Kinetics_(Summary))
 
 ##  Modeling Combustion
 
@@ -234,7 +262,6 @@ The other two approaches mentioned are more complicated than our current treatme
 - Which of these do you think is most apt for MIRGE-Com?  Why?
 - Examine the [MIRGE-Com Pyrometheus model](https://github.com/ecisneros8/pyrometheus) and classify it per the above schema.
 
----
+## Exercises
 
-https://mirgecom.readthedocs.io/en/latest/operators/gas-dynamics.html?highlight=initializer
-https://mirgecom.readthedocs.io/en/latest/support/thermochem.html
+Examine the [gas dynamics](https://mirgecom.readthedocs.io/en/latest/operators/gas-dynamics.html) and [thermochemical](https://mirgecom.readthedocs.io/en/latest/support/thermochem.html) codes in MIRGE-Com.
