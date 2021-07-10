@@ -3,7 +3,7 @@
 These tutorials are designed to acquaint undergraduate computer science and engineering students with the physical and computational principles underlying [MIRGE-Com](https://github.com/illinois-ceesd/mirgecom), a software library developed by the [Center for Exascale-Enabled Scramjet Design](https://ceesd.illinois.edu/) for simulating scramjets on distributed systems.
 
 
-##  Agenda
+## Agenda
 
 0. [The Physics of Scramjets](./0-physics.md) · 6/14 (Mon)
 1. [Discretization & Mapping](./1-discrete.md) · 6/25 (Fri)
@@ -20,6 +20,11 @@ These tutorials are designed to acquaint undergraduate computer science and engi
 - **Python**.  MIRGE-Com is written in Python; although the lessons make oblique explanatory references to other languages like C, only familiarity with Python is expected to complete these lessons and contribute to MIRGE-Com.
 - **Physics**.  The lessons do not assume any particular background in physics or engineering other than a freshman-physics understanding of heat transfer, conservation laws, etc.; other properties are derived.  Naturally, the student will glean greater insight given a more advanced background.
 - **Mathematics**.  The student will need calculus (at least Cal 1, but Cal 3 preferred) and some basic linear algebra.  Numerical analysis is helpful as well.
+
+
+## Preparation
+
+Review [“MIRGE-Com Development How-To”](https://mirgecom.readthedocs.io/en/latest/development/development.html).  If you will run MIRGE-Com on your own system, install it locally.
 
 ---
 

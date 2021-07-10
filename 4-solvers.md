@@ -302,6 +302,7 @@ Besides linear tent functions, one may use Chebyshev polynomials, Lagrange polyn
 
 In two or three dimensions, the volume is spanned by polynomials in each independent spatial variable.
 
+- [Suresh, “Strong, Weak and Finite Element Formulations of 1-D Scalar Problems (ME 964)”](http://homepages.cae.wisc.edu/~suresh/ME964Website/M964Notes/Notes/Strong,Weak,%20FE%20Form%20of%201-DScalar.pdf)
 - [“Finite Element Method”](https://en.wikipedia.org/wiki/Finite_element_method)
 
 `grudge` discretizes and solves the discontinuous Galerkin operators in space.  From MIRGE-Com's perspective, this is a basically invisible process, and decisions about how to best handle a given formulation are left up to `grudge`.  `grudge` uses `pymbolic` to handle quantities in the grid.

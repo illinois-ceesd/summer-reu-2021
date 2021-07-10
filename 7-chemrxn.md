@@ -233,3 +233,8 @@ The other two approaches mentioned are more complicated than our current treatme
 
 - Which of these do you think is most apt for MIRGE-Com?  Why?
 - Examine the [MIRGE-Com Pyrometheus model](https://github.com/ecisneros8/pyrometheus) and classify it per the above schema.
+
+---
+
+https://mirgecom.readthedocs.io/en/latest/operators/gas-dynamics.html?highlight=initializer
+https://mirgecom.readthedocs.io/en/latest/support/thermochem.html
