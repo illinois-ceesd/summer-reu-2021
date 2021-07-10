@@ -26,9 +26,20 @@ These tutorials are designed to acquaint undergraduate computer science and engi
 
 Review [“MIRGE-Com Development How-To”](https://mirgecom.readthedocs.io/en/latest/development/development.html).  If you will run MIRGE-Com on your own system, install it locally.
 
+You may also find it convenient to install [Paraview](https://www.paraview.org/download/) locally for visualizing results.  (Load the `pvtu` file to view all output in a time series.)
+
+
+## Operation
+
+The Python virtual environment for MIRGE-Com may be activated in a single line in each terminal session before running code:
+
+```sh
+. miniforge3/bin/activate ceesd
+```
+
 ---
 
-The lessons cover most of the following points at least glancingly, except for discrete simulation methods, wall functions, turbulence modeling, time-resolved (transient) flow, and particulars of HPC execution.
+The lessons cover most of the following points at least glancingly, except for discrete simulation methods, wall functions, coupling, turbulence modeling, time-resolved (transient) flow, and particulars of HPC execution.
 
 -   Physics
     -   Problem Statement
@@ -41,6 +52,7 @@ The lessons cover most of the following points at least glancingly, except for d
     -   Structure
     -   Special Requirements
         -   Wall functions
+        -   Coupling
 -   Discretization
     -   Discretization Method
     -   Accuracy

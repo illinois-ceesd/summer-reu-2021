@@ -92,7 +92,7 @@ You can play around with the options to generate different nodal configurations.
 
 **Putting It All Together**.  We said MIRGE-Com used a _nodal discrete Galerkin finite element method_:
 
-- **Nodal**.  We use a nodal basis, such as Lagrange polynomials, on each element.
+- **Nodal**.  We use a nodal basis, such as Lagrange polynomials, on each element.  (This means that the polynomials used to span the element have zero-points within; this is okay for low-order elements but can cause trouble—oscillations—for higher-order ones.)
 
     If we load a solved example problem, we can see the nodal elements:
 
