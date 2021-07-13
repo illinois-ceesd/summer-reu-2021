@@ -1,7 +1,7 @@
 #   Transport and Flux on a Grid
 
 - Write inter-element flux equations.
-- Enumerate reasons for drift in conserved state variables.
+- Enumerate reasons for error and drift in conserved state variables.
 - Diagnose transport issues for a particular mesh–element scheme.
 
 ##  Control Volumes
@@ -187,11 +187,11 @@ Numerical dispersion arises from odd-ordered derivative terms in the truncation 
 
 ![](http://www.jick.net/~jess/hr/skept/GWP/packet1.gif)
 
-![](error-dispersion.png)
+![](./img/error-dispersion.png)
 
 Numerical diffusion arises from even-ordered derivative terms in the truncation error.  Physical diffusion will cause waves to soften, and similarly numerical diffusion will smear out and dissipate waves, in particular smoothing out sharp fronts as discontinuities.  (This is something to be attentive to in a supersonic system with shock waves present.)
 
-![](error-diffusion.png)
+![](./img/error-diffusion.png)
 
 The most common way to think about truncation error is that we are inexactly solving an exact expression.  It's also possible to flip the statement:  we are _exactly_ solving an _inexact_ expression.  Sometimes this latter approach is fruitful in reasoning about how and whether to worry about numerical error sources in a calculation.
 
