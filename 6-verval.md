@@ -102,11 +102,12 @@ Software verification tests are those tests which check that processes work as t
 Various kinds of tests are available, beyond basic unit tests:
 
 > Five typologies of experiments can be distinguished in the process of specifying, implementing, and evaluating computing artifacts.
-    -   Feasibility experiments are performed to evaluate whether an artifact of interest performs the functions specified by users and stakeholders;
-    -   trial experiments are more specific experiments carried out to evaluate isolated capabilities of the system given some set of initial conditions;
-    -   field experiment are performed in real environments and not in simulated ones;
-    -   comparison experiments test similar artifacts, instantiating in different ways the same function, to evaluate which instantiation better performs the desired function both in real-like and real environments;
-    -   finally, controlled experiments are used to appraise advanced hypotheses on the behaviors of the testing artifact.
+>
+> -   Feasibility experiments are performed to evaluate whether an artifact of interest performs the functions specified by users and stakeholders;
+> -   trial experiments are more specific experiments carried out to evaluate isolated capabilities of the system given some set of initial conditions;
+> -   field experiment are performed in real environments and not in simulated ones;
+> -   comparison experiments test similar artifacts, instantiating in different ways the same function, to evaluate which instantiation better performs the desired function both in real-like and real environments;
+> -   finally, controlled experiments are used to appraise advanced hypotheses on the behaviors of the testing artifact.
 >
 > [[SEP, "Philosophy of Computer Science"](https://plato.stanford.edu/entries/computer-science/)]
 
