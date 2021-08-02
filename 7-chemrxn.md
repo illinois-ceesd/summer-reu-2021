@@ -262,6 +262,15 @@ The other two approaches mentioned are more complicated than our current treatme
 - Which of these do you think is most apt for MIRGE-Com?  Why?
 - Examine the [MIRGE-Com Pyrometheus model](https://github.com/ecisneros8/pyrometheus) and classify it per the above schema.
 
+## Pyrometheus
+
+Pyrometheus builds on [Cantera](https://cantera.org/science/index.html), a reactor and flame-model chemical kinetics package.
+
+Cantera provides zero-dimensional and one-dimensional models.  What do these mean?
+
+0. A zero-dimensional model yields the output condition of a reactor given initial and boundary conditions.
+1. A one-dimensional (flame) model represents steady-state and reacting flows similar to the reaction coordinate method.
+
 ## Exercises
 
-Examine the [gas dynamics](https://mirgecom.readthedocs.io/en/latest/operators/gas-dynamics.html) and [thermochemical](https://mirgecom.readthedocs.io/en/latest/support/thermochem.html) codes in MIRGE-Com.
+- Examine the [gas dynamics](https://mirgecom.readthedocs.io/en/latest/operators/gas-dynamics.html) and [thermochemical](https://mirgecom.readthedocs.io/en/latest/support/thermochem.html) codes in MIRGE-Com.
